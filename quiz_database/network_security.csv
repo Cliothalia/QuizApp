@@ -1,0 +1,55 @@
+What is a network protocol?;A network protocol is a set of rules and conventions that govern how data is transmitted and received, dictating how devices communicate and defining the format of data packets.
+What does HTTP(S) stand for?;Hypertext Transfer Protocol (Secure)
+What is HTTP used for?;It enables the transfer of webpages from servers to browsers using a request-response protocol.
+How does the HTTP request-response protocol work?;A client sends a request to a server, and the server responds with HTML pages.
+What makes HTTPS different from HTTP?;It adds encryption using SSL/TLS to protect data transferred between client and server.
+What does FTP stand for?;File Transfer Protocol
+What is FTP used for?;It is used to transfer files between a client and a server over the internet or a local network.
+How does FTP handle file transfer initiation?;The client initiates a connection to upload or download files.
+What access types does FTP support?;FTP supports both anonymous access and authenticated access.
+Why is FTP not secure?;FTP lacks encryption, so secure alternatives like FTPS or SFTP are recommended.
+What does SMTP stand for?;Simple Mail Transfer Protocol
+What is SMTP used for?;It is used for sending and relaying outgoing email messages.
+What type of protocol is SMTP?;A push protocol
+What does an email client do when sending mail via SMTP?;It connects to an SMTP server to send messages to the recipient's mail server.
+Does SMTP provide encryption by default?;"No, SMTP does not provide encryption; SMTPS does."
+Which protocols are typically used with SMTP to retrieve incoming mail?;IMAP or POP3.
+What does DNS stand for?;Domain Name System
+What is the purpose of DNS?;It translates human-readable domain names into IP addresses, acting like the internet's phone book.
+What does DHCP stand for?;Dynamic Host Configuration Protocol
+What does DHCP do?;DHCP automatically assigns IP addresses and network configuration settings to devices on a network.
+What information can DHCP provide to a device?;An IP address that is dynamically assigned from a predefined range, the subnet mask, default gateway, and DNS server.
+What benefit does DHCP provide compared to manual setup?;It prevents conflicts and ensures correct network settings without manual configuration.
+What does SSH stand for?;Secure Shell
+What is SSH used for?;SSH allows secure remote access and management of servers and devices over unsecured networks.
+How does SSH protect data?;SSH encrypts all data between the client and server.
+What does TCP/IP stand for?;Transmission Control Protocol/Internet Protocol
+What is the role of TCP in TCP/IP?;TCP ensures reliable transmission by breaking data into packets, ordering them, and handling errors.
+What is the role of IP in TCP/IP?;IP handles addressing and routing so packets reach their destination across networks.
+What does POP3 stand for?;Post Office Protocol 3
+What does IMAP stand for?;Internet Message Access Protocol
+What is POP3 used for?;POP3 downloads emails to a device and usually removes them from the server, enabling offline access.
+What is IMAP used for?;IMAP keeps emails on the server and synchronizes them across devices for anywhere-access.
+What protocol is used for sending email?;SMTP sends email, while POP3 and IMAP retrieve it.
+What does UDP stand for?;User Datagram Protocol
+What is UDP known for?;UDP provides fast, connectionless data transmission without guaranteeing delivery, order, or error checking.
+For what types of applications is UDP ideal?;Real-time applications where speed matters more than accuracy, such as video streaming, online gaming, and VoIP.
+What does ARP stand for?;Address Resolution Protocol
+What is ARP used for?;ARP maps an IP address to a device's physical MAC address on a local network.
+How does ARP find a MAC address?;It broadcasts 'Who has this IP address?', and the device with that IP responds with its MAC address.
+What is Telnet used for?;Telnet remotely accesses and manages devices using a command-line interface.
+Why is Telnet considered insecure?;It does not encrypt transmitted data, including login credentials.
+What does SNMP stand for?;Simple Network Management Protocol
+What is SNMP used for?;SNMP manages and monitors network devices such as routers, switches, and servers.
+How does SNMP operate?;It uses a client-server model where agents on devices send data to a network management system.
+What does ICMP stand for?;Internet Control Message Protocol
+What is ICMP used for?;ICMP sends error messages and operational information to help diagnose network communication issues.
+Which tools use ICMP?;Ping and Traceroute.
+What does NTP stand for?;Network Time Protocol
+What is NTP used for?;NTP synchronizes clocks of computers and network devices to maintain accurate, consistent time.
+How does NTP get accurate time?;It communicates with time servers that use sources such as atomic clocks.
+What does RIP stand for?;Routing Information Protocol
+What does OSPF stand for?;Open Shortest Path First
+What is RIP?;RIP (Routing Information Protocol) is a distance-vector routing protocol that chooses paths based on hop count, with a maximum of 15 hops.
+What is OSPF?;OSPF (Open Shortest Path First) is a link-state protocol that calculates the most efficient path using a cost-based metric.
+Why is OSPF preferred in complex networks?;It converges faster, is more scalable, and handles complex topologies better than RIP.
