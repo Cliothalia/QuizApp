@@ -2,6 +2,7 @@ import csv
 import random
 
 def check_answer(answer, user_answer, got_question_wrong):
+
     # Case 1: User typed something
     if user_answer:
         result = []
@@ -39,7 +40,6 @@ def check_answer(answer, user_answer, got_question_wrong):
     
     display_answer = "".join(result)
     return display_answer, False
-
 
 def file_loader():
     # Variable to determine what topic file to retrieve
