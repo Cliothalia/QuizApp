@@ -59,26 +59,35 @@ class Question:
         self.correct = False
         self.attempts = 0
         self.review = False
-        self.copied = False
     
     def get_user_answer(self):
-        while self.correct == False or self.copied == False:
-            # Get user input
+        while self.attempts < 3:
             self.user_answer = input("Answer: ")
-            # If user typed something, check answer. Else, give them a hint
-            if self.user_answer != "":
-                self.check_answer()
-            else:
+
+            if self.user_answer == "":
                 self.get_hint()
-
-            if self.copied == True:
-                return
+                print(self.display_answer)
             
-            # Check whether answer is correct
-            self.check_correct()
+            else:
+                self.check_answer()
 
-            # Register attempt
+                if self.display_answer == self.answer:
+                    print("Correct!")
+                    self.correct = True
+                    return
+                else:
+                    print(self.display_answer)
             self.attempts += 1
+        
+        # After 3 failed attempts
+        self.force_copy()
+    
+    def force_copy(self):
+        print(f"The correct answer is:\n{self.answer}")
+
+        input("Type the answer to continue (or press Enter to skip): ")
+
+        self.review = True
 
     def check_answer(self):
         result = []
@@ -97,14 +106,12 @@ class Question:
             for char in self.answer[len(self.user_answer):]:
                 result.append(" " if char == " " else ".")
         
-        self.display_answer = "".join(result)
+        self.display_answer = " ".join(result)
 
     def get_hint(self):
         # After three tries, display full answer
-        if self.attempts >= 2:
+        if self.attempts > 3:
             self.display_answer = self.answer
-            print("self.copied set to True")
-            self.copied = True
             return
 
         result = []
@@ -119,49 +126,7 @@ class Question:
             
             result.append(hint)
         
-        self.display_answer = "".join(result)
-
-    def check_correct(self):
-        if self.display_answer == self.answer and self.copied == False:
-            print("Correct!")
-            self.correct = True
-
-        else:
-            self.review = True
-            print(self.display_answer)
-
-        # if self.display_answer == self.answer:
-        #     if self.attempts >= 2:
-        #         print(self.answer)
-        #         self.user_answer = input("Answer: ")
-        #         self.review = True
-        #         self.copied = True
-        #     else:
-        #         print("Correct!")
-        #         self.correct = True
-        # else:
-        #     self.review = True
-        #     print(self.display_answer)
-                
-
-
-
-        # Answer is immediately correct
-        #   self.correct = True
-        #   self.review = False
-        #   self.copied = False
-        # Answer is incorrect after first and second attempt
-        #   self.correct = False
-        #   self.review = True
-        #   self.copied = False
-        # Answer is correct after first or second attempt
-        #   self.correct = True
-        #   self.review = True
-        #   self.copied = False
-        # Answer is incorrect after third attempt
-        #   self.correct = False
-        #   self.review = True
-        #   self.copied = True
+        self.display_answer = " ".join(result)
 
 
 if __name__ == "__main__":
@@ -177,13 +142,7 @@ if __name__ == "__main__":
     for question in quiz.questions_to_ask:
         print(question.question)
         question.get_user_answer()
-        print(question.display_answer)
 
-    # Get question
-    # Print question
-    # Ask user for input
-    # Check input against actual answer
-    # If answer correct, print correct and go to next question
-    # If incorrect, ask 2 more times
-    # If incorrect after three times, print full answer and have user type it over
-    # Then go to the next question
+        if question.review:
+            quiz.questions_to_review.append(question)
+        print(question.display_answer)
