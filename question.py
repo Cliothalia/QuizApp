@@ -81,4 +81,9 @@ class Question:
             return True
         elif user == "/help":
             print("Commands currently in use:")
-            print("/reset   /mode   /remaining")
+            print("/reset   /mode   /remaining  /progress")
+
+        elif user == "/progress":
+            print(f"Questions asked so far: {quiz.total_answered}")
+            print(f"Correct answers: {quiz.total_correct}")
+            print(f"Accuracy: {quiz.total_correct/quiz.total_answered*100:.0f} %")

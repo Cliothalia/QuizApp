@@ -11,6 +11,7 @@ class Quiz:
 
         self.current_questions = []
         self.wrong_questions = []
+        self.asked_questions = []
 
         # Score tracking
         self.total_answered = 0
@@ -20,6 +21,11 @@ class Quiz:
         pairs = self.bank.get_questions(self.max_questions)
 
         self.current_questions = [Question(q, a) for q, a in pairs]
+
+        # Track questions asked without duplicates
+        for q in self.current_questions:
+            if q not in self.asked_questions:
+                self.asked_questions.append(q)
 
     def ask_round(self):
         self.wrong_questions = []
@@ -101,10 +107,13 @@ class Quiz:
         print("1. New Questions")
 
         if self.current_questions:
-            print("2. Review All")
+            print("2. Review All (Current Round)")
+        
+        if self.asked_questions:
+            print("3. Review All Asked Questions")
         
         if self.wrong_questions:
-            print("3. Review wrong")
+            print("4. Review wrong")
         
         choice = int(input("> "))
 
@@ -117,8 +126,14 @@ class Quiz:
         elif choice == 2:
             for q in self.current_questions:
                 q.reset()
+        
+        elif choice == 3:
+            self.current_questions = self.asked_questions.copy()
 
-        elif choice == 3 and self.wrong_questions:
+            for q in self.current_questions:
+                q.reset()
+
+        elif choice == 4 and self.wrong_questions:
             self.current_questions = self.wrong_questions
             for q in self.current_questions:
                 q.reset()
