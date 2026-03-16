@@ -26,13 +26,13 @@ class Quiz:
 
         for q in self.current_questions:
             print("\n", q.question)
+            correct = False
 
             if self.mode == "typing":
-                correct = q.ask_typing()
+                correct = self.ask_typing(q)
             
             elif self.mode == "flashcard":
-                q.ask_flashcard()
-                correct = not q.review
+                correct = self.ask_flashcard(q)
             
             self.progress(q, correct)
 
@@ -48,6 +48,53 @@ class Quiz:
         print(f"Progress: {self.total_answered} answered, {self.total_correct} correct\n"
                 f"{self.total_correct/self.total_answered*100:.0f} %")
 
+    def ask_typing(self, q):
+        while True:
+            user = input("Answer (Enter for hint): ").strip()
+            
+            # Check whether user input was a command
+            if q.check_command(user, self):
+                continue
+
+            # Correct answer
+            if q.is_correct(user):
+                print("Correct!")
+                return True
+
+            # User asked for hint
+            if user == "":
+                if q.attempts < 2:
+                    q.show_hint()
+                else:
+                    q.force_copy()
+                    return False
+            
+            # Wrong answer
+            else:
+                print(q.mask_answer(user))
+            
+            q.attempts += 1
+
+            # Too many attempts --> reveal answer
+            if q.attempts >= 3:
+                q.force_copy()
+                return False
+
+    def ask_flashcard(self, q):
+        while True:
+            user = input("Press Enter to see the answer or type a command: ").strip()
+
+            if q.check_command(user, self):
+                continue
+            
+            if user == "":
+                print("Answer: ", q.answer)
+                knew_it = input("Did you know it? (y/n): ").strip().lower()
+                if knew_it != "y":
+                    q.review = True
+
+                return True
+
     def choose_next(self):
         print("\nOptions:")
 
@@ -62,11 +109,16 @@ class Quiz:
         choice = int(input("> "))
 
         if choice == 1:
-            self.new_round()
+            if not self.bank.unused_questions:
+                print("No new questions left!")
+            else:
+                self.new_round()
+
         elif choice == 2:
             for q in self.current_questions:
                 q.reset()
-        elif choice == 3:
+
+        elif choice == 3 and self.wrong_questions:
             self.current_questions = self.wrong_questions
             for q in self.current_questions:
                 q.reset()

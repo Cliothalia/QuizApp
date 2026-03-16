@@ -19,6 +19,8 @@ if __name__ == "__main__":
 
         if not quiz.bank.unused_questions and not quiz.wrong_questions:
             print("\nQuiz finished!")
+            print(f"Final Score: {quiz.total_correct} / {quiz.total_answered} correct")
+            print(f"That is {quiz.total_correct/quiz.total_answered*100:.0f} %")
             break
 
         quiz.choose_next()

@@ -12,34 +12,6 @@ class Question:
         self.attempts = 0
         self.review = False
     
-    def ask_typing(self):
-        while True:
-            user = input("Answer (Enter for hint): ").strip()
-
-            # Correct answer
-            if self.is_correct(user):
-                print("Correct!")
-                return True
-
-            # User asked for hint
-            if user == "":
-                if self.attempts < 2:
-                    self.show_hint()
-                else:
-                    self.force_copy()
-                    return False
-            
-            # Wrong answer
-            else:
-                print(self.mask_answer(user))
-            
-            self.attempts += 1
-
-            # Too many attempts --> reveal answer
-            if self.attempts >= 3:
-                self.force_copy()
-                return False
-    
     def is_correct(self, user):
         # Return True if user answer is close enough to correct answer.
 
@@ -47,17 +19,10 @@ class Question:
         answer = self.answer.strip().lower()
 
         ratio = difflib.SequenceMatcher(None, user, answer).ratio()
+
         # Ratio set to 90% correct
         return ratio >= 0.9
             
-    def ask_flashcard(self):
-        input("Press Enter to see the answer...")
-        print("Answer: ", self.answer)
-        
-        knew_it = input("Did you know it? (y/n): ").strip().lower()
-        if knew_it != "y":
-            self.review = True
-
     def mask_answer(self, user):
         result = []
 
@@ -92,3 +57,28 @@ class Question:
                 hints.append(word[:2] + "." * (len(word) - 2))
 
         print("Hint: ", " ".join(hints))
+    
+    def check_command(self, user, quiz):
+        if not user.startswith("/"):
+            return False
+        
+        if user == "/reset":
+            print("\nResetting current round...")
+            for q in quiz.current_questions:
+                q.reset()
+            return True
+        
+        elif user == "/mode":
+            old_mode = quiz.mode
+            quiz.mode = "flashcard" if quiz.mode == "typing" else "typing"
+            print(f"\nSwitched mode from {old_mode} -> {quiz.mode}")
+            return True
+        
+        elif user == "/remaining":
+            total = len(quiz.bank.all_questions)
+            left = len(quiz.bank.unused_questions)
+            print(f"\nQuestions remaining in bank: {left} / {total}")
+            return True
+        elif user == "/help":
+            print("Commands currently in use:")
+            print("/reset   /mode   /remaining")
