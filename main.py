@@ -1,6 +1,21 @@
+import os
+
 from quiz import Quiz
 
+def list_files():
+    path = "C://Users//SmeetsJulia(Calco)//OneDrive - Calco//Documenten//VScode//QuizApp//quiz_database"
+    dir_list = os.listdir(path)
+    for file in dir_list:
+        display_name = file.strip(".csv").replace("_", " ").title()
+        print(display_name)
+
+
 if __name__ == "__main__":
+
+    print("Welcome to the Quiz App!")
+    print("~~~")
+    print("The following topics are ready for review:")
+    list_files()
 
     topic = input("Choose topic: ")
     max_questions = int(input("Questions per round: "))
