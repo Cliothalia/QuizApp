@@ -1,5 +1,6 @@
 import csv
 import random
+import difflib
 
 class QuestionBank:
     def __init__(self, topic):
@@ -51,7 +52,7 @@ class Question:
             user = input("Answer (Enter for hint): ").strip()
 
             # Correct answer
-            if user.lower() == self.answer.lower():
+            if self.is_correct(user):
                 print("Correct!")
                 return True
 
@@ -73,6 +74,16 @@ class Question:
             if self.attempts >= 3:
                 self.force_copy()
                 return False
+    
+    def is_correct(self, user):
+        # Return True if user answer is close enough to correct answer.
+
+        user = user.strip().lower()
+        answer = self.answer.strip().lower()
+
+        ratio = difflib.SequenceMatcher(None, user, answer).ratio()
+        # Ratio set to 90% correct
+        return ratio >= 0.9
             
     def ask_flashcard(self):
         input("Press Enter to see the answer...")
