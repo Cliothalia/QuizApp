@@ -39,16 +39,54 @@ class Quiz:
         self.mode = mode.lower()
         self.max_questions = max_questions
         self.current_question = 0
-        self.review_mode = "Normal"
+        self.review_mode = "normal"
         self.first_run = True
         self.questions_to_review = []
         self.questions_to_ask = []
     
     def prepare_questions(self):
+        # Reset self.questions_to_ask
+        self.questions_to_ask = []
+
+        # Fill questions_to_ask with questions from dict
         for i in range(self.max_questions):
+            if not self.bank.unused_questions:
+                break
             q, a = self.bank.get_random_question()
             question = Question(q, a)
             self.questions_to_ask.append(question)
+
+    def set_mode(self):
+        # Get review mode input from user
+
+        if len(self.questions_to_review) > 0:
+            mode = input("You've answered all questions!\nYou can now:\n1. Get a number of new questions\n2. Review all questions\n3. Review wrong questions")
+        else:
+            mode = input("You've answered all questions correctly!\n You can now: \n1. Get a number of new questions\n2. Review all questions")
+        
+        # Default mode = "Normal"
+        # Get a number of new questions
+        if mode == "1":
+            self.review_mode = "new"
+            self.prepare_questions()
+        # Review all mode: review all questions by resetting their properties and asking those questions again
+        elif mode == "2":
+            self.review_mode = "all"
+            self.reset_questions()
+        # Review mode: ask only questions that were added to questions_to_review and reset their properties
+        elif mode == "3":
+            self.review_mode = "review"
+            self.questions_to_ask = self.questions_to_review
+            self.questions_to_review = []
+            self.reset_questions()
+    
+    def reset_questions(self):
+        # Reset properties of all questions in questions_to_ask back to original state
+        for question in self.questions_to_ask:
+            question.display_answer = ""
+            question.correct = False
+            question.attempts = 0
+            question.review = False
 
 class Question:
     def __init__(self, question, answer):
@@ -106,7 +144,7 @@ class Question:
             for char in self.answer[len(self.user_answer):]:
                 result.append(" " if char == " " else ".")
         
-        self.display_answer = " ".join(result)
+        self.display_answer = "".join(result)
 
     def get_hint(self):
         # After three tries, display full answer
@@ -117,6 +155,7 @@ class Question:
         result = []
         words = self.answer.split(" ")
         for word in words:
+            hint = ""
             if self.attempts == 0:
                 # First hint: first letter only
                 hint = word[0] + "." * (len(word) - 1)
@@ -126,7 +165,7 @@ class Question:
             
             result.append(hint)
         
-        self.display_answer = " ".join(result)
+        self.display_answer = "".join(result)
 
 
 if __name__ == "__main__":
@@ -136,13 +175,16 @@ if __name__ == "__main__":
 
     quiz = Quiz(topic, mode, max_questions)
 
-    # Prepare questions
     quiz.prepare_questions()
 
-    for question in quiz.questions_to_ask:
-        print(question.question)
-        question.get_user_answer()
+    while True:
+        for question in quiz.questions_to_ask:
+            print(question.question)
+            question.get_user_answer()
 
-        if question.review:
-            quiz.questions_to_review.append(question)
-        print(question.display_answer)
+            if question.review:
+                quiz.questions_to_review.append(question)
+            
+            print(question.display_answer)
+        
+        quiz.set_mode()
