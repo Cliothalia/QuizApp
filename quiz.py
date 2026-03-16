@@ -8,6 +8,7 @@ class QuestionBank:
         self.all_questions = []
         self.unused_questions = []
 
+        # Load questions from csv
         with open(f"quiz_database/{topic_file}.csv") as file:
             reader = csv.reader(file, delimiter=";")
 
@@ -45,7 +46,7 @@ class Question:
         self.attempts = 0
         self.review = False
     
-    def ask(self):
+    def ask_typing(self):
         while True:
             user = input("Answer (Enter for hint): ").strip()
 
@@ -72,7 +73,15 @@ class Question:
             if self.attempts >= 3:
                 self.force_copy()
                 return False
-    
+            
+    def ask_flashcard(self):
+        input("Press Enter to see the answer...")
+        print("Answer: ", self.answer)
+        
+        knew_it = input("Did you know it? (y/n): ").strip().lower()
+        if knew_it != "y":
+            self.review = True
+
     def mask_answer(self, user):
         result = []
 
@@ -109,7 +118,7 @@ class Question:
         print("Hint: ", " ".join(hints))
 
 class Quiz:
-    def __init__(self, topic, max_questions, mode="typing"):
+    def __init__(self, topic, max_questions, mode):
         self.bank = QuestionBank(topic)
         self.max_questions = max_questions
         self.mode = mode
@@ -129,17 +138,14 @@ class Quiz:
             print("\n", q.question)
 
             if self.mode == "typing":
-                correct = q.ask()
+                correct = q.ask_typing()
 
                 if not correct:
                     self.wrong_questions.append(q)
             
             elif self.mode == "flashcard":
-                input("Press Enter to see the answer...")
-                print("Answer: ", q.answer)
-
-                knew_it = input("Did you know it? (y/n): ").strip().lower()
-                if knew_it != "y":
+                q.ask_flashcard()
+                if q.review:
                     self.wrong_questions.append(q)
     
     def choose_next(self):
@@ -170,8 +176,12 @@ if __name__ == "__main__":
     topic = input("Choose topic: ")
     max_questions = int(input("Questions per round: "))
     mode = input("Mode (typing/flashcard): ").strip().lower()
+    if mode == "t":
+        mode = "typing"
+    elif mode == "f":
+        mode = "flashcard"
 
-    quiz = Quiz(topic, max_questions)
+    quiz = Quiz(topic, max_questions, mode)
 
     quiz.new_round()
 
