@@ -125,6 +125,10 @@ class Quiz:
 
         self.current_questions = []
         self.wrong_questions = []
+
+        # Score tracking
+        self.total_answered = 0
+        self.total_correct = 0
     
     def new_round(self):
         pairs = self.bank.get_questions(self.max_questions)
@@ -139,15 +143,25 @@ class Quiz:
 
             if self.mode == "typing":
                 correct = q.ask_typing()
-
-                if not correct:
-                    self.wrong_questions.append(q)
             
             elif self.mode == "flashcard":
                 q.ask_flashcard()
-                if q.review:
-                    self.wrong_questions.append(q)
-    
+                correct = not q.review
+            
+            self.progress(q, correct)
+
+    def progress(self, q, correct):
+        # Update score
+        self.total_answered += 1
+        if correct:
+            self.total_correct += 1
+        else:
+            self.wrong_questions.append(q)
+        
+        # Progress feedback
+        print(f"Progress: {self.total_answered} answered, {self.total_correct} correct\n"
+                f"{self.total_correct/self.total_answered*100:.0f} %")
+
     def choose_next(self):
         print("\nOptions:")
 
