@@ -46,27 +46,32 @@ class Question:
         self.review = False
     
     def ask(self):
-        while self.attempts < 3:
-            user = input("Answer: ")
+        while True:
+            user = input("Answer (Enter for hint): ").strip()
 
-            if user == "":
-                if self.attempts >= 2:
-                    self.force_copy()
-                    return False
-
-                self.show_hint()
-                self.attempts += 1
-                continue
-
-            if user.strip().lower() == self.answer.lower():
+            # Correct answer
+            if user.lower() == self.answer.lower():
                 print("Correct!")
                 return True
+
+            # User asked for hint
+            if user == "":
+                if self.attempts < 2:
+                    self.show_hint()
+                else:
+                    self.force_copy()
+                    return False
             
-            print(self.mask_answer(user))
+            # Wrong answer
+            else:
+                print(self.mask_answer(user))
+            
             self.attempts += 1
-        
-        self.force_copy()
-        return False
+
+            # Too many attempts --> reveal answer
+            if self.attempts >= 3:
+                self.force_copy()
+                return False
     
     def mask_answer(self, user):
         result = []
@@ -104,9 +109,10 @@ class Question:
         print("Hint: ", " ".join(hints))
 
 class Quiz:
-    def __init__(self, topic, max_questions):
+    def __init__(self, topic, max_questions, mode="typing"):
         self.bank = QuestionBank(topic)
         self.max_questions = max_questions
+        self.mode = mode
 
         self.current_questions = []
         self.wrong_questions = []
@@ -122,10 +128,19 @@ class Quiz:
         for q in self.current_questions:
             print("\n", q.question)
 
-            correct = q.ask()
+            if self.mode == "typing":
+                correct = q.ask()
 
-            if not correct:
-                self.wrong_questions.append(q)
+                if not correct:
+                    self.wrong_questions.append(q)
+            
+            elif self.mode == "flashcard":
+                input("Press Enter to see the answer...")
+                print("Answer: ", q.answer)
+
+                knew_it = input("Did you know it? (y/n): ").strip().lower()
+                if knew_it != "y":
+                    self.wrong_questions.append(q)
     
     def choose_next(self):
         print("\nOptions:")
@@ -154,6 +169,7 @@ if __name__ == "__main__":
 
     topic = input("Choose topic: ")
     max_questions = int(input("Questions per round: "))
+    mode = input("Mode (typing/flashcard): ").strip().lower()
 
     quiz = Quiz(topic, max_questions)
 
