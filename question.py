@@ -1,4 +1,5 @@
 import difflib
+from colorama import Fore, Style
 
 class Question:
     def __init__(self, question, answer):
@@ -63,7 +64,8 @@ class Question:
             return False
         
         if user == "/reset":
-            print("\nResetting current round...")
+            print(Fore.RED + "\nResetting current round...")
+            print(Style.RESET_ALL)
             for q in quiz.current_questions:
                 q.reset()
             return True
@@ -71,19 +73,23 @@ class Question:
         elif user == "/mode":
             old_mode = quiz.mode
             quiz.mode = "flashcard" if quiz.mode == "typing" else "typing"
-            print(f"\nSwitched mode from {old_mode} -> {quiz.mode}")
+            print(Fore.RED + f"\nSwitched mode from {old_mode} -> {quiz.mode}")
+            print(Style.RESET_ALL)
             return True
         
         elif user == "/remaining":
             total = len(quiz.bank.all_questions)
             left = len(quiz.bank.unused_questions)
-            print(f"\nQuestions remaining in bank: {left} / {total}")
+            print(Fore.RED + f"\nQuestions remaining in bank: {left} / {total}")
+            print(Style.RESET_ALL)
             return True
         elif user == "/help":
-            print("Commands currently in use:")
+            print(Fore.RED + "Commands currently in use:")
             print("/reset   /mode   /remaining  /progress")
+            print(Style.RESET_ALL)
 
         elif user == "/progress":
-            print(f"Questions asked so far: {quiz.total_answered}")
+            print(Fore.RED + f"Questions asked so far: {quiz.total_answered}")
             print(f"Correct answers: {quiz.total_correct}")
             print(f"Accuracy: {quiz.total_correct/quiz.total_answered*100:.0f} %")
+            print(Style.RESET_ALL)
